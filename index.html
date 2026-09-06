@@ -113,7 +113,7 @@
   .prompt-stage{ display:flex; flex-direction:column; padding-top:8%; }
 
   .pre-header{ font-size:26px; font-weight:700; line-height:1.4; color:#1E1E1D; margin:0 0 36px; }
-  .post-header{ display:none; width:100%; max-width:300px; margin:0 auto 20px; }
+  .post-header{ display:none; width:100%; max-width:300px; margin:0 auto 40px; }
   .post-header .result-label{ font-size:14px; color:var(--mute); text-align:center; margin-bottom:10px; font-weight:500; }
   .post-header .result-type-line{ display:flex; align-items:center; justify-content:space-between; }
   .post-header .result-type-line .bracket{ font-size:28px; }
@@ -145,10 +145,10 @@
   .result-text.show{ display:block; }
   .result-text.show.visible{ opacity:1; }
 
-  .result-formula{ font-size:18px; font-weight:700; color:#1E1E1D; text-align:center; margin:32px 0 16px; }
-  .result-desc{ font-size:15px; line-height:1.7; color:#1E1E1D; text-align:center; margin-bottom:32px; }
+  .result-formula{ font-size:18px; font-weight:700; color:#1E1E1D; text-align:center; margin:40px auto 16px; max-width:500px; }
+  .result-desc{ font-size:15px; line-height:1.7; color:#1E1E1D; text-align:center; margin:0 auto 44px; max-width:500px; }
 
-  .distribution{ border:1px solid rgba(30,30,29,0.12); border-radius:16px; padding:20px; margin-bottom:32px; display:flex; flex-direction:column; gap:16px; }
+  .distribution{ border:1px solid rgba(30,30,29,0.12); border-radius:16px; padding:20px; margin:0 auto 60px; max-width:500px; display:flex; flex-direction:column; gap:16px; }
   .dist-row{ display:flex; align-items:center; gap:12px; }
   .dist-icon{ flex-shrink:0; width:22px; height:22px; }
   .dist-label{ flex-shrink:0; width:78px; text-align:left; white-space:nowrap; font-size:13px; font-weight:600; color:#1E1E1D; }
@@ -158,16 +158,19 @@
   .dist-pct{ flex-shrink:0; width:44px; text-align:right; font-family:'FrutigerLTPro-Bold','Pretendard',sans-serif; font-weight:700; font-size:14px; color:#1E1E1D; }
 
   .pill-header{ background:var(--ink); color:var(--paper); font-size:13px; font-weight:600; padding:9px 18px; border-radius:999px; display:inline-block; margin:0 auto 16px; }
-  .result-section{ margin-bottom:44px; text-align:center; }
-  .result-section ul{ list-style:none; margin:0; padding:0; text-align:left; }
+  .result-section{ margin-bottom:60px; text-align:center; }
+  .result-section ul{ list-style:none; margin:0 auto; padding:0; text-align:left; max-width:500px; }
   .result-section li{ font-size:14.5px; line-height:1.75; color:#1E1E1D; margin-bottom:8px; padding-left:16px; position:relative; }
   .result-section li::before{ content:'•'; position:absolute; left:0; color:var(--mute); }
 
-  .rec-items{ display:flex; gap:14px; justify-content:center; }
-  .rec-item{ flex:1; max-width:110px; text-align:center; }
-  .rec-item .thumb{ width:100%; aspect-ratio:1; background:var(--cream); border-radius:14px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; padding:14px; }
+  .rec-items{ display:flex; gap:16px; justify-content:center; max-width:500px; margin:0 auto; }
+  .rec-item{ flex:1; max-width:152px; text-align:center; }
+  .rec-item .thumb{ width:100%; aspect-ratio:1; background:var(--cream); border-radius:14px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; padding:14px; }
   .rec-item .thumb img{ width:100%; height:100%; object-fit:contain; display:block; }
-  .rec-item .tag{ font-size:11.5px; color:var(--mute); font-family:'Courier New', monospace; }
+  .rec-item .tag{
+    display:inline-block; font-size:11.5px; color:#1E1E1D; font-family:'Pretendard', -apple-system, sans-serif;
+    font-weight:500; background:#F4F4F4; padding:6px 10px; border-radius:999px;
+  }
 
   @media (max-width:480px){
     .intro h1{ font-size:32px; }
@@ -272,7 +275,7 @@
         <div class="rec-items" id="r-tags"></div>
       </div>
 
-      <button class="cta" style="max-width:none;" onclick="restart()">새로 시작하기</button>
+      <button class="cta" style="max-width:none; margin-top:100px;" onclick="restart()">새로 시작하기</button>
     </div>
   </div>
 </div>
@@ -821,7 +824,7 @@ function buildInterior(type){
   return INTERIOR_SVG[type];
 }
 
-const DIST_DISPLAY_ORDER = ['display','minimal','hide','sort'];
+const DIST_DISPLAY_ORDER = ['display','sort','hide','minimal'];
 const DIST_ICON_SVG = {
   display: `<svg viewBox="0 0 43 43" xmlns="http://www.w3.org/2000/svg"><circle cx="21.0625" cy="21.0625" r="21.0625" fill="#483234"/><path d="M19.5879 19.9067V22.8501H8.79883V19.9067H19.5879ZM33.3252 22.8501H22.5332V19.9067H33.3252V22.8501Z" fill="#fffedb"/><path d="M22.5312 33.6416H19.5889V22.8506H22.5312V33.6416ZM19.5889 22.8506H19.5879V19.9072H19.5889V22.8506ZM22.5332 22.8506H22.5312V19.9072H22.5332V22.8506ZM22.5312 19.9072H19.5889V9.11523H22.5312V19.9072Z" fill="#fffedb"/></svg>`,
   minimal: `<svg viewBox="0 0 43 43" xmlns="http://www.w3.org/2000/svg"><circle cx="21.0625" cy="21.0625" r="21.0625" fill="#483234"/><rect x="9.08984" y="19.626" width="23.9435" height="2.87322" fill="#fffedb"/></svg>`,
