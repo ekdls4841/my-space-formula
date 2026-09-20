@@ -126,17 +126,24 @@
   .result-illustration-bg{ position:absolute; inset:0; }
   .result-illustration-bg svg{ width:100%; height:100%; display:block; }
   .drawer-panel{
-    position:absolute; inset:0; background:var(--shelf); border-radius:0; cursor:pointer; touch-action:none;
-    transition:transform .55s cubic-bezier(.4,0,.2,1);
+    position:absolute; top:0; right:0; height:100%; width:100%; background:var(--shelf); border-radius:0; cursor:pointer; touch-action:none;
+    transition:transform .55s cubic-bezier(.4,0,.2,1), opacity .3s ease, width .3s ease;
+    animation:doorPeek 2.6s ease-in-out infinite;
   }
-  .drawer-panel.dragging{ cursor:grabbing; transition:none; }
+  @keyframes doorPeek{
+    0%, 100%{ width:100%; }
+    50%{ width:85%; }
+  }
+  .drawer-panel.dragging{ cursor:grabbing; transition:none; animation:none; opacity:1; width:100%; }
   .handle-bar{ position:absolute; left:11.4%; top:37.4%; bottom:37.4%; width:6px; background:var(--ink); border-radius:3px; pointer-events:none; }
-  .arrow-svg-wrap{ position:absolute; left:20.06%; top:50%; width:36.7%; transform:translateY(-50%); animation:arrowGrow 1.7s ease-in-out infinite; pointer-events:none; }
+  .arrow-svg-wrap{ position:absolute; left:20.06%; top:50%; width:36.7%; transform:translateY(-50%); animation:arrowGrow 2.6s ease-in-out infinite; pointer-events:none; }
   .arrow-svg-wrap svg{ width:100%; height:auto; display:block; }
   @keyframes arrowGrow{
-    0%{ clip-path: inset(0 100% 0 0); }
-    65%{ clip-path: inset(0 0% 0 0); }
-    100%{ clip-path: inset(0 0% 0 0); }
+    0%{ opacity:0; clip-path: inset(0 100% 0 0); }
+    10%{ opacity:1; clip-path: inset(0 100% 0 0); }
+    40%{ opacity:1; clip-path: inset(0 0% 0 0); }
+    75%{ opacity:0; clip-path: inset(0 0% 0 0); }
+    100%{ opacity:0; clip-path: inset(0 100% 0 0); }
   }
   .drawer-hint{ font-size:17px; color:#1E1E1D; margin-top:40px; font-weight:400; }
   .drawer-hint.hidden{ display:none; }
@@ -249,7 +256,7 @@
           </div>
         </div>
       </div>
-      <div class="drawer-hint" id="drawer-hint">문을 열어 나의 정리 공식을 확인해보세요</div>
+      <div class="drawer-hint" id="drawer-hint">문을 옆으로 밀어보세요</div>
     </div>
 
     <div class="result-text" id="result-text">
@@ -373,16 +380,16 @@ const TYPES = {
 };
 
 const QUESTIONS = [
-  { q:"방이 엉망일 때 제일 스트레스받는 건?",
-    options:["아끼는 물건에 먼지가 쌓이는 것","뭐가 어디 있는지 모르겠는 것","눈에 보이는 잡동사니가 많은 것","물건이 너무 많아서 답답한 것"]},
-  { q:"수납용품 사러 갔다. 제일 먼저 담는 건?",
-    options:["예쁘게 장식할 수 있는 선반","칸칸이 나눠주는 투명 정리함","안 보이게 가려주는 불투명 박스","필요한 만큼만 담는 작은 트레이"]},
+  { q:"방이 어질러졌을 때, 제일 스트레스받는 건?",
+    options:["아끼는 물건에 먼지가 쌓이는 것","뭐가 어디 있는지 모르는 것","잡동사니가 계속 눈에 보이는 것","물건이 너무 많아 답답한 것"]},
+  { q:"수납용품을 사러 갔다! 제일 먼저 담는 건?",
+    options:["예쁘게 장식할 수 있는 선반","칸칸이 나뉜 투명 정리함","물건을 가려줄 수납 박스","딱 필요한 만큼만 담는 작은 트레이"]},
   { q:"1년 넘게 안 쓴 물건을 발견했다. 나는?",
-    options:["예쁘니까 장식으로 둔다","'가끔 쓰는 물건'함에 넣어둔다","안 보이게 깊숙이 넣어둔다","바로 버린다"]},
-  { q:"며칠 뒤 방이 다시 어지러워지려 한다. 나의 대응은?",
-    options:["물건 위치만 살짝 바로잡아 다시 예쁘게 만든다","무조건 정해진 자리에 다시 넣는다","큰 바구니에 다 던져넣고 뚜껑 닫는다","그 물건을 바로 버리거나 치운다"]},
+    options:["마음에 드는 물건이면 꺼내서 장식한다","사용 빈도가 낮은 물건으로 분류한다","당장 필요 없으니 안쪽에 보관한다","앞으로도 쓸지 따져보고 정리한다"]},
+  { q:"방을 정리할 때, 나는?",
+    options:["보기 좋게 다시 배치한다","정해둔 자리에 돌려놓는다","수납함에 넣어 깔끔하게 가린다","필요한 것만 남기고 비운다"]},
   { q:"나에게 '정리'란?",
-    options:["취향을 더하는 일","체계를 나누는 일","소음을 없애는 일","불필요함을 빼는 일"]}
+    options:["취향을 더하는 일","체계를 나누는 일","깔끔함을 곱하는 일","불필요함을 빼는 일"]}
 ];
 
 const TYPE_ORDER = ['display','sort','hide','minimal'];
@@ -625,6 +632,8 @@ function initDrawerDrag(){
     if(!dragging || drawerOpened) return;
     let dx = e.clientX - startX;
     if(dx < 0) dx = 0;
+    const maxPreview = panel.offsetWidth * 0.65;
+    if(dx > maxPreview) dx = maxPreview;
     currentX = dx;
     panel.style.transform = `translateX(${dx}px)`;
   });
@@ -635,7 +644,7 @@ function initDrawerDrag(){
     panel.classList.remove('dragging');
     const dt = Date.now() - downTime;
     const dx = currentX;
-    if(dx > 70 || (dt < 300 && dx < 10)){
+    if(dx > 40 || dt < 400){
       openDrawer();
     } else {
       panel.style.transform = 'translateX(0px)';
